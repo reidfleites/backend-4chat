@@ -14,8 +14,9 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 
 
-const port = process.env.PORT || 5000;
 dotenv.config();
+const port = process.env.PORT || 5000;
+
 const app = express();
 const httpServer = createServer(app);
 app.use(express.json());
