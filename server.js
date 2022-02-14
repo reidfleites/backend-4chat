@@ -14,9 +14,8 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 
 
-dotenv.config();
-const port = process.env.PORT || 3011;
 
+dotenv.config();
 const app = express();
 const httpServer = createServer(app);
 app.use(express.json());
@@ -35,6 +34,8 @@ app.use(
   })
 );
 
+
+const port = process.env.PORT || 3011;
 const mongoConnectString = process.env.MONGO_URI;
 mongoose.connect(mongoConnectString);
 
