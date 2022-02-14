@@ -13,8 +13,9 @@ import * as HistoriesController from "./controllers/HistoriesController.js";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 
-dotenv.config();
+
 const port = process.env.PORT || 5000;
+dotenv.config();
 const app = express();
 const httpServer = createServer(app);
 app.use(express.json());
