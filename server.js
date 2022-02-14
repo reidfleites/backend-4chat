@@ -35,7 +35,7 @@ app.use(
 );
 
 
-const port = process.env.PORT || 3011;
+const port = process.env.PORT || 5000;
 const mongoConnectString = process.env.MONGO_URI;
 mongoose.connect(mongoConnectString);
 
@@ -206,6 +206,7 @@ io.on("connection", (socket) => {
   });
 });
 
-httpServer.listen(5000, () => {
+httpServer.listen(process.env.PORT || 5000
+, () => {
   console.log(`Now listening on port http://localhost:${port}`);
 });
