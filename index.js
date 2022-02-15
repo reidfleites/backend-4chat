@@ -170,7 +170,7 @@ const io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
   console.log("user connected");
-  socket.on("add user", (userId, username) => {
+  socket.on("add user", (userId, username,avatar) => {
     const user = onlineUsers.some((user) => user.id === userId);
     if (user) {
       const index = onlineUsers.findIndex((user) => user.id === userId);
@@ -182,6 +182,7 @@ io.on("connection", (socket) => {
         id: userId,
         username: username,
         socketId: socket.id,
+        avatar:avatar,
         countMessage: 0,
       });
     io.emit("onlineUsers", onlineUsers);
