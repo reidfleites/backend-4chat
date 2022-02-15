@@ -62,7 +62,6 @@ app.post("/addMessage", async (req, res) => {
 
 app.get("/verify/:token", async (req, res) => {
   const token = req.params.token;
-  console.log(token);
   const userFound = await UsersModel.findByIdAndUpdate(
     { _id: new mongoose.Types.ObjectId(token) },
     { $set: { verified: "verified" } },
@@ -128,6 +127,7 @@ app.post("/login", async (req, res) => {
       req.session.user = user;
       req.session.save();
       res.status(200).json(user);
+      console.log(user);
     } else {
       res.status(401).json({ message: "user name oder password incorrect" });
     }
