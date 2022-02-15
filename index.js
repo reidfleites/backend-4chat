@@ -71,11 +71,11 @@ app.get("/verify/:token", async (req, res) => {
   if (!userFound) {
     res.json({ error: "a user ist not exist " });
   }
-  res
-    .writeHead(301, {
+  res.send(`continuos hier:${process.env.FRONTEND_URL}/verify`)
+   /* .writeHead(301, {
       Location: `${process.env.FRONTEND_URL}/verify`,
     })
-    .end();
+    .end();*/
 });
 
 app.post("/signup", async (req, res) => {
