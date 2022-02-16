@@ -19,18 +19,26 @@ dotenv.config();
 const app = express();
 const httpServer = createServer(app);
 app.use(express.json());
+app.set("trust proxy", 1);
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin:
+     process.env.FRONTEND_URL,
     credentials: true,
   })
 );
 app.use(cookieParser());
 app.use(
   session({
+    secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
-    secret: process.env.SESSION_SECRET,
+    cookie: {
+      httpOnly: true,
+      maxAge: 60 * 60 * 1000, // one hour
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: process.env.NODE_ENV === "production",
+    },
   })
 );
 
@@ -136,6 +144,11 @@ app.post("/login", async (req, res) => {
 
 app.get("/currentUser", async (req, res) => {
   let user = req.session.user;
+  /*
+  if(!user){
+    user={username:"",_id:""}
+  }
+  */
   res.json(user);
 });
 
