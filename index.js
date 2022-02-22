@@ -183,7 +183,9 @@ app.get("/logout", async (req, res) => {
 app.post("/chatRoom", async (req, res) => {
   const roomName = req.body.room.roomName;
   const chatRoom = await HistoryModel.find({ to: roomName });
+  if(chatRoom.length>0){
   res.status(200).json(chatRoom);
+  }
 });
 app.get("/allUsers", async (req, res) => {
   const allUsers = await UsersModel.find({});
