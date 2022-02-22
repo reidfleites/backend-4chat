@@ -210,11 +210,32 @@ io.on("connection", (socket) => {
   console.log("user connected");
   socket.on("add user", (userId, username,avatar) => {
     const user = onlineUsers.some((user) => user.id === userId);
-    if (user) {
-      const index = onlineUsers.findIndex((user) => user.id === userId);
-      const newUser = Object.assign(user, { socketId: socket.id });
-      onlineUsers[index] = newUser;
+    if (!user && userId) {
+      onlineUsers.push({
+        id: userId,
+        username: username,
+        socketId: socket.id,
+        avatar: avatar,
+        countMessage: 0,
+      });
+      ///////////////////////////////////////////////
+    io.emit("onlineUsers", onlineUsers);
+
+      /////////////////////////////////
+      }
+      else{
+       const index = onlineUsers.findIndex((user) => user.id === userId);
+       const user = onlineUsers.find((user) => user.id === userId);
+       //const newUser = Object.assign(user, { socketId: socket.id });
+       const newUser = { ...user, socketId: socket.id };
+       onlineUsers[index] = { ...newUser };
+       console.log(onlineUsers);
+       io.emit("onlineUsers", onlineUsers);
+      
     }
+    
+  
+    /*
     !onlineUsers.some((user) => user.id === userId) &&
       onlineUsers.push({
         id: userId,
@@ -223,8 +244,9 @@ io.on("connection", (socket) => {
         avatar:avatar,
         countMessage: 0,
       });
-    io.emit("onlineUsers", onlineUsers);
-  });
+      */
+  
+    });
   socket.on("message", (data) => {
     console.log(data);
     const user = onlineUsers.find((user) => user.id === data.to);

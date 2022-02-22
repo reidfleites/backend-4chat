@@ -11,7 +11,7 @@ export const signupMail = (to,link,cause) => {
     msg = {
       ...msg,
       to: to,
-      from: "team.dev.4chat@gmail.com",
+      from: "dreinier86@gmail.com",
       subject: "Welcome to 4-Chat! - Thanks for joining us ",
       text: "Thank you for signing up",
       html: ` <p>Please confirm your email to start the chat by clicking on the button below.</p>
@@ -22,7 +22,7 @@ export const signupMail = (to,link,cause) => {
     msg = {
       ...msg,
       to: to,
-      from: "team.dev.4chat@gmail.com",
+      from: "dreinier86@gmail.com",
       subject: "forget password",
       text: "kkk",
       html: ` <p><zzz/p>
