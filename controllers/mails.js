@@ -4,17 +4,32 @@ dotenv.config();
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-export const signupMail = (to, verifyLink) => {
-  const msg = {
-    to: to,
-    from: "team.dev.4chat@gmail.com",
-    subject: "Welcome to 4-Chat! - Thanks for joining us ",
-    text: "Thank you for signing up",
-    html: ` <p>Please confirm your email to start the chat by clicking on the button below.</p>
+export const signupMail = (to,link,cause) => {
+  let msg = {};
+  //team.dev.4chat@gmail.com
+  if (cause === "verify") {
+    msg = {
+      ...msg,
+      to: to,
+      from: "team.dev.4chat@gmail.com",
+      subject: "Welcome to 4-Chat! - Thanks for joining us ",
+      text: "Thank you for signing up",
+      html: ` <p>Please confirm your email to start the chat by clicking on the button below.</p>
     <button style="border:none;padding: 10px;border-radius:15px;color:#fbf3e4;background-color:#b91646;font-size:14px;">
-    <a style="color:#fbf3e4;text-decoration: none;" href="${verifyLink}">Confirm my email</a></button>`,
-  };
-
+    <a style="color:#fbf3e4;text-decoration: none;" href="${link}">Confirm my email</a></button>`,
+    };
+  } else {
+    msg = {
+      ...msg,
+      to: to,
+      from: "team.dev.4chat@gmail.com",
+      subject: "forget password",
+      text: "kkk",
+      html: ` <p><zzz/p>
+    <button style="border:none;padding: 10px;border-radius:15px;color:#fbf3e4;background-color:#b91646;font-size:14px;">
+    <a style="color:#fbf3e4;text-decoration: none;" href="${link}">resset password</a></button>`,
+    };
+  }
   sgMail
     .send(msg)
     .then((response) => {

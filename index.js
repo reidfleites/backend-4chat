@@ -67,6 +67,7 @@ app.post("/addMessage", async (req, res) => {
   res.status(200).json(message);
 });
 
+
 app.get("/verify/:token", async (req, res) => {
   const token = req.params.token;
   const userFound = await UsersModel.findByIdAndUpdate(
@@ -77,11 +78,11 @@ app.get("/verify/:token", async (req, res) => {
   if (!userFound) {
     res.json({ error: "a user ist not exist " });
   }
-  res.send(`continuos hier:${process.env.FRONTEND_URL}/verify`)
-   /* .writeHead(301, {
+  //res.send(`continuos hier:${process.env.FRONTEND_URL}/verify`)
+   res.writeHead(301, {
       Location: `${process.env.FRONTEND_URL}/verify`,
     })
-    .end();*/
+    .end();
 });
 
 app.post("/signup", async (req, res) => {
@@ -107,7 +108,7 @@ app.post("/signup", async (req, res) => {
     const verifyUrl =
       req.protocol + "://" + req.get("host") + "/verify/" + user._id;
 
-    signupMail(user.email, verifyUrl);
+    signupMail(user.email, verifyUrl,"verify");
 
     res.json({
       user: user,
@@ -139,6 +140,29 @@ app.post("/login", async (req, res) => {
       res.status(401).json({ message: "user name oder password incorrect" });
     }
   });
+});
+
+app.post("/forgetPassword",async(req,res)=>{
+
+  const email = req.body.user.email;
+  const user = await UsersModel.findOne({email:email});
+  if(user){
+  const link =`${process.env.FRONTEND_URL}/password/`+ user._id;
+  signupMail(email,link,"forgetPassword");
+  res.status(200).json({message:"email gesegndet"})
+}})
+
+app.post("/setPassword",async(req,res)=>{
+  const id=req.body.user.id;
+  const password=req.body.user.password;
+  const salt = await bcrypt.genSalt();
+  const hash = await bcrypt.hash(password, salt);
+  const user = await UsersModel.findByIdAndUpdate(
+    { _id: new mongoose.Types.ObjectId(id) },
+    { $set: { hash: hash } },
+    { new: true }
+  );
+  res.status(200).json({message:"password geset"})
 });
 
 app.get("/currentUser", async (req, res) => {
