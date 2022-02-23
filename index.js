@@ -194,9 +194,9 @@ app.get("/allUsers", async (req, res) => {
 
 let onlineUsers = [];
 let rooms = [
-  { room: "general", newMessage: false },
-  { room: "music", newMessage: false },
-  { room: "sport", newMessage: false },
+  { room: "GENERAL", newMessage: false },
+  { room: "MUSIC", newMessage: false },
+  { room: "SPORT", newMessage: false },
 ];
 const io = new Server(httpServer, {
   cors: {
