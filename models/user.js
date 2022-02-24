@@ -9,7 +9,7 @@ const usersSchema = mongoose.Schema(
     hash: String,
     verified: String,
   },
-  { collection: "user" }
+  { collection: "user" ,versionKey:false}
 );
 const UsersModel = mongoose.model("Users", usersSchema);
 export default UsersModel;

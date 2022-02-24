@@ -6,7 +6,7 @@ const usersSchema = mongoose.Schema(
     to: String,
     text: String,
   },
-  { timestamps: true, collection: "history" }
+  { timestamps: true, collection: "history",versionKey:false }
 );
 const HistoriesModel = mongoose.model("Histories", usersSchema);
 export default HistoriesModel;
