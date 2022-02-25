@@ -13,8 +13,6 @@ import * as HistoriesController from "./controllers/HistoriesController.js";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 
-
-
 dotenv.config();
 const app = express();
 const httpServer = createServer(app);
@@ -22,8 +20,7 @@ app.use(express.json());
 app.set("trust proxy", 1);
 app.use(
   cors({
-    origin:
-    process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL,
     credentials: true,
   })
 );
@@ -36,14 +33,12 @@ app.use(
     cookie: {
       httpOnly: true,
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      secure: process.env.NODE_ENV === "production"
+      secure: process.env.NODE_ENV === "production",
     },
   })
 );
 
-
 const port = process.env.PORT || 5000;
-
 
 const mongoConnectString = process.env.MONGO_URI;
 mongoose.connect(mongoConnectString);
@@ -67,7 +62,6 @@ app.post("/addMessage", async (req, res) => {
   res.status(200).json(message);
 });
 
-
 app.get("/verify/:token", async (req, res) => {
   const token = req.params.token;
   const userFound = await UsersModel.findByIdAndUpdate(
@@ -78,8 +72,8 @@ app.get("/verify/:token", async (req, res) => {
   if (!userFound) {
     res.json({ error: "a user ist not exist " });
   }
-  //res.send(`continuos hier:${process.env.FRONTEND_URL}/verify`)
-   res.writeHead(301, {
+  res
+    .writeHead(301, {
       Location: `${process.env.FRONTEND_URL}/verify`,
     })
     .end();
@@ -108,7 +102,7 @@ app.post("/signup", async (req, res) => {
     const verifyUrl =
       req.protocol + "://" + req.get("host") + "/verify/" + user._id;
 
-    signupMail(user.email, verifyUrl,"verify");
+    signupMail(user.email, verifyUrl, "verify");
 
     res.json({
       user: user,
@@ -142,19 +136,19 @@ app.post("/login", async (req, res) => {
   });
 });
 
-app.post("/forgetPassword",async(req,res)=>{
-
+app.post("/forgetPassword", async (req, res) => {
   const email = req.body.user.email;
-  const user = await UsersModel.findOne({email:email});
-  if(user){
-  const link =`${process.env.FRONTEND_URL}/password/`+ user._id;
-  signupMail(email,link,"forgetPassword");
-  res.status(200).json({message:"email gesegndet"})
-}})
+  const user = await UsersModel.findOne({ email: email });
+  if (user) {
+    const link = `${process.env.FRONTEND_URL}/password/` + user._id;
+    signupMail(email, link, "forgetPassword");
+    res.status(200).json({ message: "email sent" });
+  }
+});
 
-app.post("/setPassword",async(req,res)=>{
-  const id=req.body.user.id;
-  const password=req.body.user.password;
+app.post("/setPassword", async (req, res) => {
+  const id = req.body.user.id;
+  const password = req.body.user.password;
   const salt = await bcrypt.genSalt();
   const hash = await bcrypt.hash(password, salt);
   const user = await UsersModel.findByIdAndUpdate(
@@ -162,16 +156,11 @@ app.post("/setPassword",async(req,res)=>{
     { $set: { hash: hash } },
     { new: true }
   );
-  res.status(200).json({message:"password geset"})
+  res.status(200).json({ message: "Password is set, you can login" });
 });
 
 app.get("/currentUser", async (req, res) => {
   let user = req.session.user;
-  /*
-  if(!user){
-    user={username:"",_id:""}
-  }
-  */
   res.json(user);
 });
 
@@ -183,9 +172,8 @@ app.get("/logout", async (req, res) => {
 app.post("/chatRoom", async (req, res) => {
   const roomName = req.body.room.roomName;
   const chatRoom = await HistoryModel.find({ to: roomName });
-  
+
   res.status(200).json(chatRoom);
-  
 });
 app.get("/allUsers", async (req, res) => {
   const allUsers = await UsersModel.find({});
@@ -208,7 +196,7 @@ const io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
   console.log("user connected");
-  socket.on("add user", (userId, username,avatar) => {
+  socket.on("add user", (userId, username, avatar) => {
     const user = onlineUsers.some((user) => user.id === userId);
     if (!user && userId) {
       onlineUsers.push({
@@ -218,37 +206,16 @@ io.on("connection", (socket) => {
         avatar: avatar,
         countMessage: 0,
       });
-      ///////////////////////////////////////////////
-    io.emit("onlineUsers", onlineUsers);
-
-      /////////////////////////////////
-      }
-      else{
-       const index = onlineUsers.findIndex((user) => user.id === userId);
-       const user = onlineUsers.find((user) => user.id === userId);
-       //const newUser = Object.assign(user, { socketId: socket.id });
-       const newUser = { ...user, socketId: socket.id };
-       onlineUsers[index] = { ...newUser };
-       console.log(onlineUsers);
-       io.emit("onlineUsers", onlineUsers);
-      
+      io.emit("onlineUsers", onlineUsers);
+    } else {
+      const index = onlineUsers.findIndex((user) => user.id === userId);
+      const user = onlineUsers.find((user) => user.id === userId);
+      const newUser = { ...user, socketId: socket.id };
+      onlineUsers[index] = { ...newUser };
+      io.emit("onlineUsers", onlineUsers);
     }
-    
-  
-    /*
-    !onlineUsers.some((user) => user.id === userId) &&
-      onlineUsers.push({
-        id: userId,
-        username: username,
-        socketId: socket.id,
-        avatar:avatar,
-        countMessage: 0,
-      });
-      */
-  
-    });
+  });
   socket.on("message", (data) => {
-    console.log(data);
     const user = onlineUsers.find((user) => user.id === data.to);
     io.to(user.socketId).emit("messageArrived", data);
   });
@@ -269,7 +236,6 @@ io.on("connection", (socket) => {
   });
 });
 
-httpServer.listen(port
-, () => {
+httpServer.listen(port, () => {
   console.log(`Now listening on port http://localhost:${port}`);
 });
