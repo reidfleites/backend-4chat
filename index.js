@@ -89,10 +89,15 @@ app.post("/signup", async (req, res) => {
   const username = req.body.user.name;
   const userExisted = await UsersController.getUser(username);
   const email = req.body.user.email;
+  const userEmail = await UsersModel.findOne({email});
   const password = req.body.user.password;
   if (userExisted) {
     res.status(400).json({ error: "user already exist" });
-  } else {
+  } 
+  else if (userEmail){
+    res.status(400).json({error:"that email is already associated with another user"})
+  }
+  else {
     const salt = await bcrypt.genSalt();
     const hash = await bcrypt.hash(password, salt);
     const user = await UsersModel.create({
@@ -127,7 +132,7 @@ app.post("/login", async (req, res) => {
   });
 
   if (!user) {
-    res.status(401).json({ message: "user name oder password incorrect" });
+    res.status(401).json({ message:"user name oder password incorrect" });
   }
   const hash = user.hash;
   bcrypt.compare(password, hash).then((result) => {
