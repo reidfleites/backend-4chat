@@ -23,11 +23,11 @@ export const signupMail = (to,link,cause) => {
       ...msg,
       to: to,
       from: "team.dev.4chat@gmail.com",
-      subject: "forget password",
-      text: "reset your password",
-      html: ` <p><reset your password</p>
+      subject: "Reset password",
+      text: "Reset your password",
+      html: ` <p>Please reset your password by clicking on the button below.</p>
     <button style="border:none;padding: 10px;border-radius:15px;color:#fbf3e4;background-color:#b91646;font-size:14px;">
-    <a style="color:#fbf3e4;text-decoration: none;" href="${link}">resset password</a></button>`,
+    <a style="color:#fbf3e4;text-decoration: none;" href="${link}">reset password</a></button>`,
     };
   }
   sgMail
